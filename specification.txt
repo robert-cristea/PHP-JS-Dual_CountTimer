@@ -1,0 +1,15 @@
+﻿작업시간 오전 11시 - 21시
+
+website.com/edit.php
+
+2개의 input 창을 준비한다.
+여기에 date/time을 입력한다.
+자료기지와의 련결하여 보관한다.
+표timer는 한개 column은 id, first_datetime, second_datetime,최신날자항목추가.
+
+website.com/timer.php
+자료기지에서 timer를 뽑아 현시한다.
+첫 first date까지 거꿀계수하다가 시간이 되면 ON CALL 이라는 heading 글자가 출현한다.
+다음 second date에 도달하면 END라는 글자가 출현한다.
+
+다시 공정을 반복한다.
