@@ -1,135 +1,132 @@
 <?php
-//session_start();
-//
-//$first_datetime = $second_datetime = "";
-//
-//if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//    if (empty($_POST["first_datetime"])) {
-//        $error1 = "First DateTime is required";
-//    } else {
-//        $first_datetime = $_POST["first_datetime"];
-//    }
-//
-//    if (empty($_POST["second_datetime"])) {
-//        $error2 = "Second DateTime is required";
-//    } else {
-//        $second_datetime = $_POST["second_datetime"];
-//    }
-//}
-//
-//if ($first_datetime !== null && $second_datetime !== null){
-//
-//    $servername = "localhost";
-//    $username = "root";
-//    $password = "";
-//    $dbname = "timer";
-//
-//    // Create connection
-//    $conn = new mysqli($servername, $username, $password, $dbname);
-//    // Check connection
-//    if ($conn->connect_error) {
-//      die("Connection failed: " . $conn->connect_error);
-//    }
-//
-//    $sql = "INSERT INTO timer (first_datetime, second_datetime)
-//    VALUES (`$first_datetime`,`$second_datetime`)";
-//
-//    if ($conn->query($sql) === TRUE) {
-//      echo "New record created successfully";
-//    } else {
-//      echo "Error: " . $sql . "<br>" . $conn->error;
-//    }
-//
-//    $conn->close();
-//}
-//
-//
-//?>
+require_once './config.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (empty($_POST["first_datetime1"])) {
+        $first_error1 = "First DateTime is required";
+    } else {
+        $first_datetime1 = $_POST["first_datetime1"];
+    }
+
+    if (empty($_POST["second_datetime1"])) {
+        $second_error1 = "Second DateTime is required";
+    } else {
+        $second_datetime1 = $_POST["second_datetime1"];
+        if (strtotime($second_datetime1) < strtotime($first_datetime1) && !isset($first_error1)) {
+            $compare_error1 = "Second Datetime must be after First Datetime!";
+        }
+    }
+
+    if (isset($first_datetime1) && isset($second_datetime1) && !isset($compare_error1)){
+
+        // Create connection
+        $conn = new mysqli(SERVER,DB_USER,DB_PASS,DB_NAME);
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+        $type = $_POST['type'];
+        $sql = "INSERT INTO timer (first_datetime, second_datetime,type) VALUES ('$first_datetime1','$second_datetime1','$type')";
+
+        if ($conn->query($sql) === TRUE) {
+            $success_message1 = "New Timer has been created!";
+        } else {
+            $error_message1 = "Error: " . $sql . "<br>" . $conn->error;
+        }
+        $conn->close();
+    }
+
+    if (empty($_POST["first_datetime2"])) {
+        $first_error2 = "First DateTime is required";
+    } else {
+        $first_datetime2 = $_POST["first_datetime2"];
+    }
+
+    if (empty($_POST["second_datetime2"])) {
+        $second_error2 = "Second DateTime is required";
+    } else {
+        $second_datetime2 = $_POST["second_datetime2"];
+        if (strtotime($second_datetime2) < strtotime($first_datetime2) && !isset($first_error2)) {
+            $compare_error2 = "Second Datetime must be after First Datetime!";
+        }
+    }
+
+    if (isset($first_datetime2) && isset($second_datetime2) && !isset($compare_error2)){
+
+        // Create connection
+        $conn = new mysqli(SERVER,DB_USER,DB_PASS,DB_NAME);
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+        $type = $_POST['type'];
+        $sql = "INSERT INTO timer (first_datetime, second_datetime,type) VALUES ('$first_datetime2','$second_datetime2','$type')";
+
+        if ($conn->query($sql) === TRUE) {
+            $success_message2 = "New Timer has been created!";
+        } else {
+            $error_message2 = "Error: " . $sql . "<br>" . $conn->error;
+        }
+        $conn->close();
+    }
+}
+
+?>
 
 <!DOCTYPE html>
 <html>
     <head>
-        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.1.3/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" />
-    <style>
-        .dateselecter label,.dateselecter input,.dateselecter i{
-            display:inline-block;
-        }
-    </style>
 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.1.4/css/bootstrap-datetimepicker.min.css">
     </head>
     <body>
-    <div class="container">
-        <h3>Calendar with 24 hour time format(yyyy-MM-dd hh:mm:ss)</h3>
+    <div class="container" style="padding:100px">
+        <?php if (isset($success_message1)):?><div class="alert alert-success"><?php echo $success_message1?></div><?php endif ?>
+        <?php if (isset($error_message1)):?><div class="alert alert-danger"><?php echo $error_message1?></div><?php endif ?>
+        <?php if (isset($compare_error1)):?><div class="alert alert-warning"><?php echo $compare_error1?></div><?php endif ?>
+        <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+          	<h1 class = "text-center">Timer 1</h1>
+            <div><label>First Date/Time</label><input type="text" id="dateTimePicker1" name="first_datetime1" class="form-control"><span style="color:red"><?php if (isset($first_error1)) echo $first_error1 ?></span></div>
+            <div><label>Second Date/Time</label><input type="text" id="dateTimePicker2" name="second_datetime1" class="form-control"><span style="color:red"><?php if (isset($second_error1)) echo $second_error1 ?></span></div>
+            <input class="btn btn-primary btn-block" style="margin-top:5px" type="submit" value="Create Timer" />
+            <input type="hidden" name="type" value="1" />
+        </form>
+        <div style="margin-top:50px"></div>
 
-        <div style="text-align:left; margin:10px auto 10px auto;" class="dateselecter">
-            <label for="demo1">Please enter a date here &gt;&gt;</label>
-            <input type="Text" class="form-control" id="demo1" maxlength="25" size="25" style="width:200px;" />
-            <i class="glyphicon glyphicon-calendar" onclick="javascript:NewCssCal ('demo1','yyyyMMdd','arrow',true,'24',true)" style="cursor:pointer; font-size:18px;"/></i>
+        <?php if (isset($success_message2)):?><div class="alert alert-success"><?php echo $success_message2?></div><?php endif ?>
+        <?php if (isset($error_message2)):?><div class="alert alert-danger"><?php echo $error_message2?></div><?php endif ?>
+        <?php if (isset($compare_error2)):?><div class="alert alert-warning"><?php echo $compare_error2?></div><?php endif ?>
+        <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+           	<h1 class = "text-center">Timer 2</h1>
+            <div><label>First Date/Time</label><input type="text" id="dateTimePicker3" name="first_datetime2" class="form-control"><span style="color:red"><?php if (isset($first_error2)) echo $first_error2 ?></span></div>
+            <div><label>Second Date/Time</label><input type="text" id="dateTimePicker4" name="second_datetime2" class="form-control"><span style="color:red"><?php if (isset($second_error2)) echo $second_error2 ?></span></div>
+            <input class="btn btn-primary btn-block" style="margin-top:5px" type="submit" value="Create Timer" />
+            <input type="hidden" name="type" value="2" />
+        </form>
+        <div class="text-center" style="margin-top: 20px;">
+            <a href="./timer.php" style="font-size:20px">Watch Timer</a>
         </div>
+
     </div>
-<!--        <div>-->
-<!--            <form method="POST" action="--><?php //echo htmlspecialchars($_SERVER["PHP_SELF"]);?><!--">-->
-<!--                <label>First DateTime</label>-->
-<!--                <input type="date" name='first_datetime' />-->
-<!--                <label>Second DateTime</label>-->
-<!--                <input type="date" name='second_datetime' />-->
-<!--                <input type="submit" value="Submit">-->
-<!--            </form>-->
-<!--        </div>-->
+
     </body>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.1.3/js/bootstrap-datetimepicker.min.js"></script>
-<script>
-    $(function () {
-        var bindDatePicker = function() {
-            $(".date").datetimepicker({
-                format:'YYYY-MM-DD',
-                icons: {
-                    time: "fa fa-clock-o",
-                    date: "fa fa-calendar",
-                    up: "fa fa-arrow-up",
-                    down: "fa fa-arrow-down"
-                }
-            }).find('input:first').on("blur",function () {
-                // check if the date is correct. We can accept dd-mm-yyyy and yyyy-mm-dd.
-                // update the format if it's yyyy-mm-dd
-                var date = parseDate($(this).val());
-
-                if (! isValidDate(date)) {
-                    //create date based on momentjs (we have that)
-                    date = moment().format('YYYY-MM-DD HH:mm:ss');
-                }
-
-                $(this).val(date);
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment-timezone-with-data.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.1.4/js/bootstrap-datetimepicker.min.js"></script>
+    <script>
+        moment.tz.setDefault("America/New_York");
+        console.log(moment.tz.guess())
+        console.log(new Date())
+        $(function(){
+            $('#dateTimePicker1,#dateTimePicker2,#dateTimePicker3,#dateTimePicker4').datetimepicker({
+                format: "YYYY-MM-DD HH:mm:ss",
+                useSeconds: true,
             });
-        }
+        });
+    </script>
 
-        var isValidDate = function(value, format) {
-            format = format || false;
-            // lets parse the date to the best of our knowledge
-            if (format) {
-                value = parseDate(value);
-            }
-
-            var timestamp = Date.parse(value);
-
-            return isNaN(timestamp) == false;
-        }
-
-        var parseDate = function(value) {
-            var m = value.match(/^(\d{1,2})(\/|-)?(\d{1,2})(\/|-)?(\d{4})$/);
-            if (m)
-                value = m[5] + '-' + ("00" + m[3]).slice(-2) + '-' + ("00" + m[1]).slice(-2);
-
-            return value;
-        }
-
-        bindDatePicker();
-    });
-</script>
 </html>
 

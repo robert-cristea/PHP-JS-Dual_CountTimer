@@ -1,0 +1,6 @@
+﻿특정한 화일을 제일 먼저 찾게 하는 방법
+RewriteRule ^ edit.php[QSA,L]
+
+.php확장자를 없애는 방법
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
